@@ -1,0 +1,136 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "category": "paragraph_reading",
+      "type": "multiple_choice",
+      "question": "Read this paragraph: 'Max is a big brown dog who loves playing in the park. Yesterday, he chased a squirrel up a tall oak tree and barked until his owner came.' What did Max chase?",
+      "options": ["a squirrel", "a cat", "a ball"],
+      "correctAnswer": "a squirrel",
+      "difficulty": "medium",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 20000 }
+    },
+    {
+      "id": 2,
+      "category": "spelling_correction",
+      "type": "multiple_choice",
+      "question": "Find the misspelled word in this list.",
+      "options": ["beautiful", "recieve", "friend", "school"],
+      "correctAnswer": "recieve",
+      "difficulty": "medium",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 10000 }
+    },
+    {
+      "id": 3,
+      "category": "word_scramble",
+      "type": "multiple_choice",
+      "question": "Unscramble these letters to make a word: 't-e-a-c-h-r-e'",
+      "options": ["teacher", "cheater", "retache"],
+      "correctAnswer": "teacher",
+      "difficulty": "medium",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 4,
+      "category": "sentence_ordering",
+      "type": "multiple_choice",
+      "question": "Arrange these blocks in the correct order: [1: homework] [2: She] [3: finished] [4: her]",
+      "options": ["2,3,4,1 (She finished her homework)", "1,2,3,4 (homework She finished her)", "4,1,2,3 (her homework She finished)"],
+      "correctAnswer": "2,3,4,1 (She finished her homework)",
+      "difficulty": "medium",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 5,
+      "category": "confusion_detection",
+      "type": "multiple_choice",
+      "question": "Which letter fits the word: '_ecide'?",
+      "options": ["d", "b", "p", "q"],
+      "correctAnswer": "d",
+      "difficulty": "medium",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 8000 }
+    },
+    {
+      "id": 6,
+      "category": "reading_speed_tracking",
+      "type": "multiple_choice",
+      "question": "Click 'Done' as soon as you finish reading this: 'The quick brown fox jumps over the lazy dog in the sunny forest.'",
+      "options": ["Done", "Need more time"],
+      "correctAnswer": "Done",
+      "difficulty": "medium",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 12000 }
+    },
+    {
+      "id": 7,
+      "category": "paragraph_reading",
+      "type": "multiple_choice",
+      "question": "Read: 'Plants need sunlight, water, and nutrients from the soil to grow. Without these, they cannot make food and will eventually wither.' What do plants use to make food?",
+      "options": ["sunlight and water", "shadows and rocks", "wind and ice"],
+      "correctAnswer": "sunlight and water",
+      "difficulty": "medium",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 20000 }
+    },
+    {
+      "id": 8,
+      "category": "spelling_correction",
+      "type": "multiple_choice",
+      "question": "Identify the correct spelling of the word.",
+      "options": ["different", "diferent", "differrent"],
+      "correctAnswer": "different",
+      "difficulty": "medium",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 10000 }
+    },
+    {
+      "id": 9,
+      "category": "word_scramble",
+      "type": "multiple_choice",
+      "question": "Unscramble these letters to make a word: 's-c-e-n-i-c-e'",
+      "options": ["science", "scenice", "senceic"],
+      "correctAnswer": "science",
+      "difficulty": "medium",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 10,
+      "category": "sentence_ordering",
+      "type": "multiple_choice",
+      "question": "Arrange these words correctly: [1: playing] [2: like] [3: Children] [4: games]",
+      "options": ["3,2,1,4 (Children like playing games)", "1,2,3,4 (playing like Children games)", "4,3,2,1 (games Children like playing)"],
+      "correctAnswer": "3,2,1,4 (Children like playing games)",
+      "difficulty": "medium",
+      "points": 9,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 11,
+      "category": "confusion_detection",
+      "type": "multiple_choice",
+      "question": "Which letter fits the word: '_et' (like a dog or cat)?",
+      "options": ["p", "q", "d", "b"],
+      "correctAnswer": "p",
+      "difficulty": "medium",
+      "points": 9,
+      "metadata": { "responseTimeLimitMs": 8000 }
+    },
+    {
+      "id": 12,
+      "category": "reading_speed_tracking",
+      "type": "multiple_choice",
+      "question": "Click 'Done' as soon as you finish reading this: 'A tiny blue bird chirps sweetly on a branch, waiting for morning sun.'",
+      "options": ["Done", "Need more time"],
+      "correctAnswer": "Done",
+      "difficulty": "medium",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 12000 }
+    }
+  ]
+}

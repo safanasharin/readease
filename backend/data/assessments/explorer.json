@@ -1,0 +1,114 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "category": "image_recognition",
+      "type": "multiple_choice",
+      "question": "Which picture matches the word 'dog'?",
+      "options": ["dog.png", "cat.png", "fish.png"],
+      "correctAnswer": "dog.png",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 2,
+      "category": "letter_matching",
+      "type": "multiple_choice",
+      "question": "Find the letter that looks exactly like this one: 'A'",
+      "options": ["A", "V", "H"],
+      "correctAnswer": "A",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 10000 }
+    },
+    {
+      "id": 3,
+      "category": "sound_recognition",
+      "type": "multiple_choice",
+      "question": "Which letter makes the sound '/ah/' like in 'apple'?",
+      "options": ["A", "B", "M"],
+      "correctAnswer": "A",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 12000 }
+    },
+    {
+      "id": 4,
+      "category": "color_shape_id",
+      "type": "multiple_choice",
+      "question": "What shape is a wheels on a bus?",
+      "options": ["Circle", "Square", "Triangle"],
+      "correctAnswer": "Circle",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 12000 }
+    },
+    {
+      "id": 5,
+      "category": "memory_games",
+      "type": "multiple_choice",
+      "question": "Remember this pattern: Circle 🔵 then Triangle 🔺. Which is the correct order?",
+      "options": ["🔵 🔺", "🔺 🔵", "🔵 🔵"],
+      "correctAnswer": "🔵 🔺",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 6,
+      "category": "image_recognition",
+      "type": "multiple_choice",
+      "question": "Which picture matches the word 'apple'?",
+      "options": ["apple.png", "banana.png", "pear.png"],
+      "correctAnswer": "apple.png",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 7,
+      "category": "letter_matching",
+      "type": "multiple_choice",
+      "question": "Find the letter that looks exactly like this one: 'm'",
+      "options": ["m", "w", "n"],
+      "correctAnswer": "m",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 10000 }
+    },
+    {
+      "id": 8,
+      "category": "sound_recognition",
+      "type": "multiple_choice",
+      "question": "Which letter makes the sound '/sss/' like in 'sun'?",
+      "options": ["S", "T", "P"],
+      "correctAnswer": "S",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 12000 }
+    },
+    {
+      "id": 9,
+      "category": "color_shape_id",
+      "type": "multiple_choice",
+      "question": "What color is a grass field?",
+      "options": ["Green", "Blue", "Yellow"],
+      "correctAnswer": "Green",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 12000 }
+    },
+    {
+      "id": 10,
+      "category": "memory_games",
+      "type": "multiple_choice",
+      "question": "Remember this pattern: Star ⭐, Balloon 🎈, Star ⭐. Which is the same?",
+      "options": ["⭐ 🎈 ⭐", "🎈 ⭐ 🎈", "⭐ ⭐ 🎈"],
+      "correctAnswer": "⭐ 🎈 ⭐",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    }
+  ]
+}

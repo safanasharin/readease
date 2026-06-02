@@ -1,0 +1,114 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "category": "simple_word_reading",
+      "type": "multiple_choice",
+      "question": "Which word is spelled correctly for the animal that meows?",
+      "options": ["cat", "kat", "cet"],
+      "correctAnswer": "cat",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 10000 }
+    },
+    {
+      "id": 2,
+      "category": "missing_letters",
+      "type": "multiple_choice",
+      "question": "Complete the word for a ball toy: B _ L L",
+      "options": ["A", "O", "U"],
+      "correctAnswer": "A",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 8000 }
+    },
+    {
+      "id": 3,
+      "category": "rhyming_words",
+      "type": "multiple_choice",
+      "question": "Which word rhymes with 'cake'?",
+      "options": ["lake", "cat", "car"],
+      "correctAnswer": "lake",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 10000 }
+    },
+    {
+      "id": 4,
+      "category": "audio_word_matching",
+      "type": "multiple_choice",
+      "question": "Listen to the word: /sun/. Which word matches the sound?",
+      "options": ["sun", "run", "sad"],
+      "correctAnswer": "sun",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 12000 }
+    },
+    {
+      "id": 5,
+      "category": "simple_sentence_recognition",
+      "type": "multiple_choice",
+      "question": "Which sentence makes sense?",
+      "options": ["The dog is barking.", "Dog barking is the.", "Barking the is dog."],
+      "correctAnswer": "The dog is barking.",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 6,
+      "category": "simple_word_reading",
+      "type": "multiple_choice",
+      "question": "Which word is spelled correctly for what we do with a book?",
+      "options": ["read", "reed", "red"],
+      "correctAnswer": "read",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 10000 }
+    },
+    {
+      "id": 7,
+      "category": "missing_letters",
+      "type": "multiple_choice",
+      "question": "Complete the word for a hot light in the sky: S _ N",
+      "options": ["U", "O", "E"],
+      "correctAnswer": "U",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 8000 }
+    },
+    {
+      "id": 8,
+      "category": "rhyming_words",
+      "type": "multiple_choice",
+      "question": "Which word rhymes with 'frog'?",
+      "options": ["dog", "fish", "fox"],
+      "correctAnswer": "dog",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 10000 }
+    },
+    {
+      "id": 9,
+      "category": "audio_word_matching",
+      "type": "multiple_choice",
+      "question": "Listen to the word: /fish/. Which word matches the sound?",
+      "options": ["fish", "dish", "fin"],
+      "correctAnswer": "fish",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 12000 }
+    },
+    {
+      "id": 10,
+      "category": "simple_sentence_recognition",
+      "type": "multiple_choice",
+      "question": "Which sentence describes a cat sleeping?",
+      "options": ["The cat is sleeping on the mat.", "Mat on cat sleeping.", "Cat mat sleeping on."],
+      "correctAnswer": "The cat is sleeping on the mat.",
+      "difficulty": "easy",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    }
+  ]
+}

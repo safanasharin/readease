@@ -1,0 +1,37 @@
+/* 1. Imports first */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/dist/opendyslexic.css');
+@import "tailwindcss";
+
+.font-dyslexic {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+}
+
+/* 2. Professional Tailwind 4.0 Theme */
+@theme {
+  --font-lexend: "Lexend", sans-serif;
+  --font-sans: var(--font-lexend);
+  /* Overwrites default sans font */
+
+  --color-calm-teal: #2D8A9F;
+  --color-soft-cream: #FFFDD0;
+  --color-charcoal: #333333;
+}
+
+/* 3. Global Accessibility Styles for ReadEase */
+body {
+  margin: 0;
+  padding: 0;
+  @apply bg-soft-cream text-charcoal;
+  /* Prevents visual swirling */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.75;
+  /* Improves understanding and confidence [cite: 18] */
+}
+
+/* Helper for Bionic Reading (if you use it later) */
+.bionic {
+  font-weight: 700;
+  @apply text-calm-teal;
+}

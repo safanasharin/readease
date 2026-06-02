@@ -1,0 +1,144 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "category": "comprehension_passages",
+      "type": "multiple_choice",
+      "question": "Read: 'The industrial revolution marked a period of rapid development. Though it created jobs, it caused significant urban overcrowding and pollution. Historians debate its overall quality of life impact.' What is the author's tone toward the industrial revolution?",
+      "options": ["Neutral & Balanced", "Highly Enthusiastic", "Exclusively Critical"],
+      "correctAnswer": "Neutral & Balanced",
+      "difficulty": "hard",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 25000 }
+    },
+    {
+      "id": 2,
+      "category": "vocabulary_analysis",
+      "type": "multiple_choice",
+      "question": "What is the synonym for the word 'ambiguous'?",
+      "options": ["clear", "unclear", "simple"],
+      "correctAnswer": "unclear",
+      "difficulty": "hard",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 3,
+      "category": "timed_reading",
+      "type": "multiple_choice",
+      "question": "Read this passage as quickly and accurately as possible, then click 'Done': 'Photosynthesis is the process by which green plants convert light energy into chemical energy using chlorophyll, carbon dioxide, and water.'",
+      "options": ["Done", "Need more time"],
+      "correctAnswer": "Done",
+      "difficulty": "hard",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 4,
+      "category": "grammar_correction",
+      "type": "multiple_choice",
+      "question": "Identify the grammatically correct sentence.",
+      "options": [
+        "Neither the teacher nor the students were ready.",
+        "Neither the teacher nor the students was ready.",
+        "Neither the teacher or the students were ready."
+      ],
+      "correctAnswer": "Neither the teacher nor the students were ready.",
+      "difficulty": "hard",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 18000 }
+    },
+    {
+      "id": 5,
+      "category": "logical_sequencing",
+      "type": "multiple_choice",
+      "question": "Sort these sentences into a logical paragraph: [A: Then, we went into the museum.] [B: Finally, we bought postcards at the shop.] [C: First, we arrived at the plaza.]",
+      "options": ["C → A → B", "A → C → B", "B → C → A"],
+      "correctAnswer": "C → A → B",
+      "difficulty": "hard",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 20000 }
+    },
+    {
+      "id": 6,
+      "category": "cognitive_processing",
+      "type": "multiple_choice",
+      "question": "Which of these words is the odd one out?",
+      "options": ["Apple", "Orange", "Banana", "Carrot"],
+      "correctAnswer": "Carrot",
+      "difficulty": "hard",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 7,
+      "category": "comprehension_passages",
+      "type": "multiple_choice",
+      "question": "Read: 'Deep ocean trenches are hostile environments with extreme pressure and no sunlight. Yet, bizarre creatures flourish there, relying on nutrients that drift from the surface.' How do deep-sea creatures survive without sunlight?",
+      "options": ["Eating falling nutrients", "Using sunlight bubbles", "Making light from soil"],
+      "correctAnswer": "Eating falling nutrients",
+      "difficulty": "hard",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 25000 }
+    },
+    {
+      "id": 8,
+      "category": "vocabulary_analysis",
+      "type": "multiple_choice",
+      "question": "What does the word 'perseverance' mean?",
+      "options": ["giving up quickly", "constant effort despite difficulties", "a lack of concentration"],
+      "correctAnswer": "constant effort despite difficulties",
+      "difficulty": "hard",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 9,
+      "category": "timed_reading",
+      "type": "multiple_choice",
+      "question": "Read this rapidly, then click 'Done': 'Theoretical physics attempts to explain fundamental aspects of the universe using complex equations and models.'",
+      "options": ["Done", "Need more time"],
+      "correctAnswer": "Done",
+      "difficulty": "hard",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 10,
+      "category": "grammar_correction",
+      "type": "multiple_choice",
+      "question": "Select the sentence with correct punctuation.",
+      "options": [
+        "Although she was tired, she kept writing.",
+        "Although she was tired she kept writing.",
+        "Although she was tired; she kept writing."
+      ],
+      "correctAnswer": "Although she was tired, she kept writing.",
+      "difficulty": "hard",
+      "points": 9,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    },
+    {
+      "id": 11,
+      "category": "logical_sequencing",
+      "type": "multiple_choice",
+      "question": "Sort: [A: I ate my lunch.] [B: I bought a sandwich.] [C: I sat down at a table.]",
+      "options": ["B → C → A", "A → B → C", "C → B → A"],
+      "correctAnswer": "B → C → A",
+      "difficulty": "hard",
+      "points": 9,
+      "metadata": { "responseTimeLimitMs": 20000 }
+    },
+    {
+      "id": 12,
+      "category": "cognitive_processing",
+      "type": "multiple_choice",
+      "question": "Complete the analogy: Finger is to Hand as Leaf is to ___.",
+      "options": ["Tree", "Root", "Seed"],
+      "correctAnswer": "Tree",
+      "difficulty": "hard",
+      "points": 10,
+      "metadata": { "responseTimeLimitMs": 15000 }
+    }
+  ]
+}
