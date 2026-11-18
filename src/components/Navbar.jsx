@@ -46,9 +46,14 @@ export default function Navbar() {
             Stories
           </NavLink>
 
-          <NavLink to="/progress" className={linkStyle}>
-            Progress
-          </NavLink>
+          {user && ["explorer", "beginner", "1", "2"].includes(String(user.ageGroup).toLowerCase()) && (
+            <NavLink 
+              to="/parent" 
+              className={linkStyle}
+            >
+              Progress
+            </NavLink>
+          )}
         </div>
       )}
 

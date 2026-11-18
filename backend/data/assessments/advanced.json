@@ -4,141 +4,189 @@
       "id": 1,
       "category": "comprehension_passages",
       "type": "multiple_choice",
-      "question": "Read: 'The industrial revolution marked a period of rapid development. Though it created jobs, it caused significant urban overcrowding and pollution. Historians debate its overall quality of life impact.' What is the author's tone toward the industrial revolution?",
-      "options": ["Neutral & Balanced", "Highly Enthusiastic", "Exclusively Critical"],
-      "correctAnswer": "Neutral & Balanced",
-      "difficulty": "hard",
+      "question": "Read this short passage, then answer the question below.\n\n'Mia loves spending her weekends at the local library. She enjoys reading books about animals, especially dolphins and whales. Last Saturday, she found a book about the ocean and read it from cover to cover.'\n\nWhat is Mia's favourite place to spend her weekends?",
+      "options": [
+        "The local library",
+        "The beach",
+        "A shopping centre",
+        "Her school"
+      ],
+      "correctAnswer": "The local library",
+      "difficulty": "medium",
       "points": 8,
-      "metadata": { "responseTimeLimitMs": 25000 }
+      "metadata": { "responseTimeLimitMs": 60000 }
     },
     {
       "id": 2,
       "category": "vocabulary_analysis",
       "type": "multiple_choice",
-      "question": "What is the synonym for the word 'ambiguous'?",
-      "options": ["clear", "unclear", "simple"],
-      "correctAnswer": "unclear",
-      "difficulty": "hard",
+      "question": "What does the word 'curious' mean?",
+      "options": [
+        "Wanting to learn or find out more about something",
+        "Feeling very tired and ready to sleep",
+        "Being upset or angry about something",
+        "Moving very fast without stopping"
+      ],
+      "correctAnswer": "Wanting to learn or find out more about something",
+      "difficulty": "medium",
       "points": 8,
-      "metadata": { "responseTimeLimitMs": 15000 }
+      "metadata": { "responseTimeLimitMs": 45000 }
     },
     {
       "id": 3,
       "category": "timed_reading",
       "type": "multiple_choice",
-      "question": "Read this passage as quickly and accurately as possible, then click 'Done': 'Photosynthesis is the process by which green plants convert light energy into chemical energy using chlorophyll, carbon dioxide, and water.'",
-      "options": ["Done", "Need more time"],
-      "correctAnswer": "Done",
-      "difficulty": "hard",
+      "question": "Read the sentence below at your own pace, then click 'Done' when you are ready.\n\n'The sun set slowly behind the mountains, painting the sky in shades of orange and pink.'",
+      "options": [
+        "Done — I have finished reading",
+        "I need a little more time"
+      ],
+      "correctAnswer": "Done — I have finished reading",
+      "difficulty": "medium",
       "points": 8,
-      "metadata": { "responseTimeLimitMs": 15000 }
+      "metadata": { "responseTimeLimitMs": 60000 }
     },
     {
       "id": 4,
       "category": "grammar_correction",
       "type": "multiple_choice",
-      "question": "Identify the grammatically correct sentence.",
+      "question": "Which sentence is written correctly?",
       "options": [
-        "Neither the teacher nor the students were ready.",
-        "Neither the teacher nor the students was ready.",
-        "Neither the teacher or the students were ready."
+        "She went to the store and bought some milk.",
+        "She goed to the store and buyed some milk.",
+        "She go to the store and buy some milk.",
+        "She gone to the store and boughted some milk."
       ],
-      "correctAnswer": "Neither the teacher nor the students were ready.",
-      "difficulty": "hard",
+      "correctAnswer": "She went to the store and bought some milk.",
+      "difficulty": "medium",
       "points": 8,
-      "metadata": { "responseTimeLimitMs": 18000 }
+      "metadata": { "responseTimeLimitMs": 50000 }
     },
     {
       "id": 5,
       "category": "logical_sequencing",
       "type": "multiple_choice",
-      "question": "Sort these sentences into a logical paragraph: [A: Then, we went into the museum.] [B: Finally, we bought postcards at the shop.] [C: First, we arrived at the plaza.]",
-      "options": ["C → A → B", "A → C → B", "B → C → A"],
-      "correctAnswer": "C → A → B",
-      "difficulty": "hard",
+      "question": "Which order makes the most sense for these sentences about making breakfast?\n\n[A: I eat my toast with butter and jam.]\n[B: I put the bread in the toaster.]\n[C: I take the toast out when it is ready.]",
+      "options": [
+        "B → C → A",
+        "A → B → C",
+        "C → A → B",
+        "A → C → B"
+      ],
+      "correctAnswer": "B → C → A",
+      "difficulty": "medium",
       "points": 8,
-      "metadata": { "responseTimeLimitMs": 20000 }
+      "metadata": { "responseTimeLimitMs": 55000 }
     },
     {
       "id": 6,
       "category": "cognitive_processing",
       "type": "multiple_choice",
-      "question": "Which of these words is the odd one out?",
-      "options": ["Apple", "Orange", "Banana", "Carrot"],
-      "correctAnswer": "Carrot",
-      "difficulty": "hard",
+      "question": "Which word does NOT belong with the others?",
+      "options": [
+        "Pencil",
+        "Ruler",
+        "Eraser",
+        "Sandwich"
+      ],
+      "correctAnswer": "Sandwich",
+      "difficulty": "medium",
       "points": 8,
-      "metadata": { "responseTimeLimitMs": 15000 }
+      "metadata": { "responseTimeLimitMs": 45000 }
     },
     {
       "id": 7,
       "category": "comprehension_passages",
       "type": "multiple_choice",
-      "question": "Read: 'Deep ocean trenches are hostile environments with extreme pressure and no sunlight. Yet, bizarre creatures flourish there, relying on nutrients that drift from the surface.' How do deep-sea creatures survive without sunlight?",
-      "options": ["Eating falling nutrients", "Using sunlight bubbles", "Making light from soil"],
-      "correctAnswer": "Eating falling nutrients",
-      "difficulty": "hard",
+      "question": "Read this short passage, then answer the question below.\n\n'Jake and his sister Sophie decided to go for a bike ride after school. They rode to the park, where they saw a group of ducks swimming in the pond. Sophie took some photos on her phone to share with their mum.'\n\nWhat did Sophie do at the park?",
+      "options": [
+        "She took photos of the ducks",
+        "She fed the ducks some bread",
+        "She swam in the pond",
+        "She rode her bike into the water"
+      ],
+      "correctAnswer": "She took photos of the ducks",
+      "difficulty": "medium",
       "points": 8,
-      "metadata": { "responseTimeLimitMs": 25000 }
+      "metadata": { "responseTimeLimitMs": 60000 }
     },
     {
       "id": 8,
       "category": "vocabulary_analysis",
       "type": "multiple_choice",
-      "question": "What does the word 'perseverance' mean?",
-      "options": ["giving up quickly", "constant effort despite difficulties", "a lack of concentration"],
-      "correctAnswer": "constant effort despite difficulties",
-      "difficulty": "hard",
+      "question": "Choose the word that means the same as 'happy'.",
+      "options": [
+        "Cheerful",
+        "Tired",
+        "Worried",
+        "Confused"
+      ],
+      "correctAnswer": "Cheerful",
+      "difficulty": "medium",
       "points": 8,
-      "metadata": { "responseTimeLimitMs": 15000 }
+      "metadata": { "responseTimeLimitMs": 45000 }
     },
     {
       "id": 9,
       "category": "timed_reading",
       "type": "multiple_choice",
-      "question": "Read this rapidly, then click 'Done': 'Theoretical physics attempts to explain fundamental aspects of the universe using complex equations and models.'",
-      "options": ["Done", "Need more time"],
-      "correctAnswer": "Done",
-      "difficulty": "hard",
+      "question": "Read the short paragraph below at your own pace, then click 'Done' when you are ready.\n\n'Dogs are popular pets around the world. They are known for being loyal, friendly, and easy to train. Many families enjoy going for walks with their dogs every day.'",
+      "options": [
+        "Done — I have finished reading",
+        "I need a little more time"
+      ],
+      "correctAnswer": "Done — I have finished reading",
+      "difficulty": "medium",
       "points": 8,
-      "metadata": { "responseTimeLimitMs": 15000 }
+      "metadata": { "responseTimeLimitMs": 60000 }
     },
     {
       "id": 10,
       "category": "grammar_correction",
       "type": "multiple_choice",
-      "question": "Select the sentence with correct punctuation.",
+      "question": "Pick the sentence that uses capital letters correctly.",
       "options": [
-        "Although she was tired, she kept writing.",
-        "Although she was tired she kept writing.",
-        "Although she was tired; she kept writing."
+        "My friend lives in London and visits every summer.",
+        "my friend lives in london and visits every Summer.",
+        "My Friend lives in london and visits every summer.",
+        "my friend lives in London And visits every summer."
       ],
-      "correctAnswer": "Although she was tired, she kept writing.",
-      "difficulty": "hard",
-      "points": 9,
-      "metadata": { "responseTimeLimitMs": 15000 }
+      "correctAnswer": "My friend lives in London and visits every summer.",
+      "difficulty": "medium",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 50000 }
     },
     {
       "id": 11,
       "category": "logical_sequencing",
       "type": "multiple_choice",
-      "question": "Sort: [A: I ate my lunch.] [B: I bought a sandwich.] [C: I sat down at a table.]",
-      "options": ["B → C → A", "A → B → C", "C → B → A"],
+      "question": "Put these sentences in the right order to tell a short story.\n\n[A: She opened her umbrella and walked home.]\n[B: Lena looked out the window and saw dark clouds.]\n[C: A few minutes later, it started to rain.]",
+      "options": [
+        "B → C → A",
+        "A → B → C",
+        "C → B → A",
+        "B → A → C"
+      ],
       "correctAnswer": "B → C → A",
-      "difficulty": "hard",
-      "points": 9,
-      "metadata": { "responseTimeLimitMs": 20000 }
+      "difficulty": "medium",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 55000 }
     },
     {
       "id": 12,
       "category": "cognitive_processing",
       "type": "multiple_choice",
-      "question": "Complete the analogy: Finger is to Hand as Leaf is to ___.",
-      "options": ["Tree", "Root", "Seed"],
-      "correctAnswer": "Tree",
-      "difficulty": "hard",
-      "points": 10,
-      "metadata": { "responseTimeLimitMs": 15000 }
+      "question": "Complete this simple pattern: Book is to Reading as Fork is to ___.",
+      "options": [
+        "Eating",
+        "Sleeping",
+        "Drawing",
+        "Running"
+      ],
+      "correctAnswer": "Eating",
+      "difficulty": "medium",
+      "points": 8,
+      "metadata": { "responseTimeLimitMs": 50000 }
     }
   ]
 }

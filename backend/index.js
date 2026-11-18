@@ -4,6 +4,7 @@ const cors = require("cors");
 const engineRoutes = require('./routes/engineRoutes');
 const storyRoutes = require("./routes/storyRoutes");
 const progressRoutes = require("./routes/progressRoutes");
+const childProgressRoutes = require("./routes/childProgressRoutes");
 const activityRoutes = require("./routes/activityRoutes");
 const authRoutes = require("./routes/authRoutes");
 const assessmentRoutes = require("./routes/assessmentRoutes");
@@ -21,6 +22,7 @@ app.use(express.json());
 // Routes
 app.use("/api/stories", storyRoutes);
 app.use("/api/progress", progressRoutes);
+app.use("/api/child-progress", childProgressRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/assessment", assessmentRoutes);

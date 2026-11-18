@@ -1,234 +1,381 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, RefreshCw, Trophy } from "lucide-react";
+import { ArrowLeft, RefreshCw, Trophy, Clock, Target, Star, Puzzle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../../context/AuthContext";
-import { useRewards } from "../../../rewardSystem/useRewards";
 import MascotGuide from "../../../components/explorer/MascotGuide";
 
-const CARDS_DATA = [
-  { id: 1, content: "🐶", type: "dog" },
-  { id: 2, content: "🐱", type: "cat" },
-  { id: 3, content: "🐰", type: "rabbit" },
-  { id: 4, content: "🦊", type: "fox" },
-  { id: 5, content: "🐻", type: "bear" },
-  { id: 6, content: "🐼", type: "panda" },
+// --- DATA SETS ---
+const LETTER_MATCH = [
+  { id: 'L1', a: 'A', b: 'A' }, { id: 'L2', a: 'B', b: 'B' }, { id: 'L3', a: 'C', b: 'C' },
+  { id: 'L4', a: 'D', b: 'D' }, { id: 'L5', a: 'E', b: 'E' }, { id: 'L6', a: 'F', b: 'F' },
+  { id: 'L7', a: 'G', b: 'G' }, { id: 'L8', a: 'H', b: 'H' }, { id: 'L9', a: 'M', b: 'M' },
+  { id: 'L10', a: 'S', b: 'S' }
 ];
+
+const PICTURE_MATCH = [
+  { id: 'P1', a: '🐶', b: '🐶' }, { id: 'P2', a: '🐱', b: '🐱' }, { id: 'P3', a: '🐰', b: '🐰' },
+  { id: 'P4', a: '🦊', b: '🦊' }, { id: 'P5', a: '🐻', b: '🐻' }, { id: 'P6', a: '🐼', b: '🐼' },
+  { id: 'P7', a: '🍎', b: '🍎' }, { id: 'P8', a: '☀️', b: '☀️' }, { id: 'P9', a: '🚗', b: '🚗' },
+  { id: 'P10', a: '🎈', b: '🎈' }
+];
+
+const LETTER_PICTURE_MATCH = [
+  { id: 'LP1', a: 'A', b: '🍎' }, { id: 'LP2', a: 'B', b: '🐻' }, { id: 'LP3', a: 'C', b: '🐱' },
+  { id: 'LP4', a: 'D', b: '🐶' }, { id: 'LP5', a: 'S', b: '☀️' }, { id: 'LP6', a: 'R', b: '🐰' },
+  { id: 'LP7', a: 'F', b: '🦊' }, { id: 'LP8', a: 'P', b: '🐼' }, { id: 'LP9', a: 'C', b: '🚗' },
+  { id: 'LP10', a: 'B', b: '🎈' }
+];
+
+const WORD_PICTURE_MATCH = [
+  { id: 'WP1', a: 'DOG', b: '🐶' }, { id: 'WP2', a: 'CAT', b: '🐱' }, { id: 'WP3', a: 'SUN', b: '☀️' },
+  { id: 'WP4', a: 'APPLE', b: '🍎' }, { id: 'WP5', a: 'BEAR', b: '🐻' }, { id: 'WP6', a: 'FOX', b: '🦊' },
+  { id: 'WP7', a: 'CAR', b: '🚗' }, { id: 'WP8', a: 'BUG', b: '🐛' }, { id: 'WP9', a: 'COW', b: '🐄' },
+  { id: 'WP10', a: 'PIG', b: '🐖' }
+];
+
+const TYPES = [LETTER_MATCH, PICTURE_MATCH, LETTER_PICTURE_MATCH, WORD_PICTURE_MATCH];
 
 export default function MemoryActivity() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { awardActivity } = useRewards();
-
+  
+  const [level, setLevel] = useState(null); // 'Easy', 'Medium', 'Hard'
   const [cards, setCards] = useState([]);
-  const [flipped, setFlipped] = useState([]);
-  const [matched, setMatched] = useState([]);
-  const [disabled, setDisabled] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
-
-  // Metrics
+  const [flippedIndices, setFlippedIndices] = useState([]);
+  const [matchedIds, setMatchedIds] = useState([]);
   const [attempts, setAttempts] = useState(0);
-  const [startTime] = useState(Date.now());
+  const [isChecking, setIsChecking] = useState(false);
+  const [time, setTime] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  // Determine difficulty based on Support Level
-  // Intensive (Level 3) -> Easy (2 pairs)
-  // Guided (Level 2) -> Medium (4 pairs)
-  // Emerging (Level 1) -> Hard (6 pairs)
-  const supportLevel = user?.supportLevel || "emerging_support";
-  let pairCount = 6; // Default Hard
-  let difficultyLabel = "🌳 Hard";
-  if (supportLevel === "intensive_support") {
-    pairCount = 2;
-    difficultyLabel = "🌱 Easy";
-  } else if (supportLevel === "guided_support") {
-    pairCount = 4;
-    difficultyLabel = "🌿 Medium";
-  }
+  const timerRef = useRef(null);
 
-  const initializeGame = () => {
-    // Slice only the number of pairs needed
-    const gamePool = CARDS_DATA.slice(0, pairCount);
-    const shuffledCards = [...gamePool, ...gamePool]
-      .sort(() => Math.random() - 0.5)
-      .map((card, index) => ({ ...card, uniqueId: index }));
-    
-    setCards(shuffledCards);
-    setFlipped([]);
-    setMatched([]);
-    setIsComplete(false);
-    setAttempts(0);
+  // Stop Timer
+  const stopTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
   };
 
+  // Start Level
+  const startLevel = (selectedLevel) => {
+    stopTimer();
+    setLevel(selectedLevel);
+    setAttempts(0);
+    setMatchedIds([]);
+    setFlippedIndices([]);
+    setIsComplete(false);
+    setTime(0);
+
+    let pairsCount = 4;
+    if (selectedLevel === "Medium") pairsCount = 6;
+    if (selectedLevel === "Hard") pairsCount = 8;
+
+    // Pick random Type
+    const selectedType = TYPES[Math.floor(Math.random() * TYPES.length)];
+    
+    // Shuffle and slice pairs
+    const shuffledSource = [...selectedType].sort(() => Math.random() - 0.5);
+    const selectedPairs = shuffledSource.slice(0, pairsCount);
+
+    // Create deck
+    const deck = [];
+    selectedPairs.forEach(pair => {
+      deck.push({ id: Math.random().toString(), matchId: pair.id, content: pair.a });
+      deck.push({ id: Math.random().toString(), matchId: pair.id, content: pair.b });
+    });
+
+    // Shuffle deck
+    setCards(deck.sort(() => Math.random() - 0.5));
+
+    // Start Timer
+    timerRef.current = setInterval(() => {
+      setTime(prev => prev + 1);
+    }, 1000);
+  };
+
+  // Cleanup Timer on Unmount
   useEffect(() => {
-    initializeGame();
-  }, [supportLevel]);
+    return () => stopTimer();
+  }, []);
 
+  // Audio Feedback
+  const speak = (text) => {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.9;
+    u.pitch = 1.2;
+    window.speechSynthesis.speak(u);
+  };
+
+  // Handle Card Click
   const handleCardClick = (index) => {
-    if (disabled || flipped.includes(index) || matched.includes(index)) return;
+    if (isChecking) return;
+    if (flippedIndices.includes(index) || matchedIds.includes(cards[index].matchId)) return;
 
-    const newFlipped = [...flipped, index];
-    setFlipped(newFlipped);
+    const newFlipped = [...flippedIndices, index];
+    setFlippedIndices(newFlipped);
 
     if (newFlipped.length === 2) {
-      setAttempts((a) => a + 1);
-      setDisabled(true);
+      setIsChecking(true);
+      setAttempts(prev => prev + 1);
+
       const firstCard = cards[newFlipped[0]];
       const secondCard = cards[newFlipped[1]];
 
-      if (firstCard.type === secondCard.type) {
-        const newMatched = [...matched, newFlipped[0], newFlipped[1]];
-        setMatched(newMatched);
-        setFlipped([]);
-        setDisabled(false);
-
-        if (newMatched.length === cards.length) {
-          setTimeout(async () => {
-            setIsComplete(true);
-            const totalTime = Date.now() - startTime;
-            // Accuracy: perfect score would be equal to pairCount. 
-            // Accuracy is calculated relative to total attempts vs minimum attempts.
-            const minAttempts = pairCount;
-            const accuracy = Math.round((minAttempts / Math.max(minAttempts, attempts + 1)) * 100);
-
-            await awardActivity({
-              activityId: "/explorer/activity/memory",
-              xpEarned: 10,
-              starsEarned: 1,
-              message: "Memory Master Badge Unlocked! ⭐",
-              analytics: {
-                memoryAccuracy: accuracy,
-                attempts: attempts + 1,
-                completionTime: totalTime,
-                accuracy
-              }
-            });
-          }, 500);
-        }
-      } else {
+      if (firstCard.matchId === secondCard.matchId) {
+        // MATCH!
         setTimeout(() => {
-          setFlipped([]);
-          setDisabled(false);
-        }, 1000);
+          setMatchedIds(prev => {
+            const updatedMatches = [...prev, firstCard.matchId];
+            
+            // Check win condition
+            if (updatedMatches.length === cards.length / 2) {
+              handleWin(updatedMatches.length, attempts + 1);
+            }
+            
+            return updatedMatches;
+          });
+          setFlippedIndices([]);
+          setIsChecking(false);
+          
+          const praises = ["🎉 Great Match!", "🌟 Excellent Memory!", "🧠 Wonderful Job!", "⭐ You Found a Pair!"];
+          speak(praises[Math.floor(Math.random() * praises.length)]);
+        }, 600);
+      } else {
+        // NO MATCH
+        setTimeout(() => {
+          setFlippedIndices([]);
+          setIsChecking(false);
+        }, 1200);
       }
     }
   };
 
+  const handleWin = async (matches, totalAttempts) => {
+    stopTimer();
+    setIsComplete(true);
+    speak("Incredible job! You matched all the cards!");
+
+    if (!user || !user._id) return;
+
+    setIsSaving(true);
+    const accuracy = Math.round((matches / totalAttempts) * 100);
+
+    try {
+      await fetch("http://localhost:5000/api/child-progress/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({
+          userId: user._id,
+          activityType: "memory_game",
+          completed: true,
+          level: level,
+          matchesFound: matches,
+          totalPairs: matches,
+          attempts: totalAttempts,
+          accuracy: accuracy,
+          completionTime: time
+        })
+      });
+    } catch (err) {
+      console.error("Error saving memory game progress", err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return m > 0 ? `${m}m ${s}s` : `${s}s`;
+  };
+
+  // --- RENDERING ---
+  
+  if (!level) {
+    return (
+      <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100 via-indigo-50 to-white p-6 flex flex-col items-center">
+        <div className="w-full max-w-7xl flex items-center justify-between mb-12">
+          <button
+            onClick={() => navigate("/explorer")}
+            className="flex items-center gap-2 text-blue-800 font-black hover:opacity-70 transition"
+          >
+            <ArrowLeft size={20} /> Back to Hub
+          </button>
+          <h1 className="text-4xl font-black text-blue-800 flex items-center gap-3">
+            <Puzzle className="text-blue-500" size={40} />
+            Memory Match Adventure
+          </h1>
+          <div className="w-24"></div>
+        </div>
+
+        <div className="bg-white rounded-[3rem] shadow-xl border-4 border-blue-200 p-12 max-w-5xl w-full text-center relative overflow-hidden">
+          <MascotGuide
+            emotion="happy"
+            message="Let's train our brain! Pick a level to start the memory game!"
+          />
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+            <button
+              onClick={() => startLevel("Easy")}
+              className="bg-green-100 border-4 border-green-300 text-green-800 rounded-3xl p-8 hover:bg-green-200 hover:-translate-y-2 transition-transform group"
+            >
+              <h3 className="text-3xl font-black mb-2">Easy</h3>
+              <p className="font-bold opacity-80">4 Pairs</p>
+            </button>
+            <button
+              onClick={() => startLevel("Medium")}
+              className="bg-yellow-100 border-4 border-yellow-300 text-yellow-800 rounded-3xl p-8 hover:bg-yellow-200 hover:-translate-y-2 transition-transform group"
+            >
+              <h3 className="text-3xl font-black mb-2">Medium</h3>
+              <p className="font-bold opacity-80">6 Pairs</p>
+            </button>
+            <button
+              onClick={() => startLevel("Hard")}
+              className="bg-red-100 border-4 border-red-300 text-red-800 rounded-3xl p-8 hover:bg-red-200 hover:-translate-y-2 transition-transform group"
+            >
+              <h3 className="text-3xl font-black mb-2">Hard</h3>
+              <p className="font-bold opacity-80">8 Pairs</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const isMatched = (matchId) => matchedIds.includes(matchId);
+  const isFlipped = (index) => flippedIndices.includes(index);
+
+  // Dynamic grid columns based on level
+  let gridCols = "grid-cols-4";
+  if (level === "Medium") gridCols = "grid-cols-4"; // 12 cards -> 3 rows of 4
+  if (level === "Hard") gridCols = "grid-cols-4"; // 16 cards -> 4 rows of 4
+  
   return (
-    <div className="min-h-screen bg-indigo-50 p-6 flex flex-col items-center">
-      <div className="w-full max-w-4xl flex items-center justify-between mb-8">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100 via-indigo-50 to-white p-6 flex flex-col items-center">
+      <div className="w-full max-w-7xl flex items-center justify-between mb-8">
         <button
-          onClick={() => navigate("/explorer")}
-          className="flex items-center gap-2 text-indigo-600 font-black hover:text-indigo-800 transition cursor-pointer"
+          onClick={() => { stopTimer(); setLevel(null); }}
+          className="flex items-center gap-2 text-blue-800 font-black hover:opacity-70 transition"
         >
-          <ArrowLeft size={20} /> Back to Hub
+          <ArrowLeft size={20} /> Change Level
         </button>
-        <h1 className="text-3xl font-black text-indigo-600">Memory Match</h1>
+        
+        <div className="flex gap-6">
+          <div className="bg-white px-6 py-3 rounded-full border-2 border-blue-200 shadow-sm flex items-center gap-3">
+            <Target className="text-purple-500" />
+            <span className="font-black text-blue-900 text-xl">Attempts: {attempts}</span>
+          </div>
+          <div className="bg-white px-6 py-3 rounded-full border-2 border-blue-200 shadow-sm flex items-center gap-3">
+            <Clock className="text-orange-500" />
+            <span className="font-black text-blue-900 text-xl">{formatTime(time)}</span>
+          </div>
+        </div>
+
         <button
-          onClick={initializeGame}
-          className="flex items-center gap-2 text-indigo-600 font-black hover:text-indigo-800 transition cursor-pointer"
+          onClick={() => startLevel(level)}
+          className="flex items-center gap-2 text-blue-800 font-black hover:opacity-70 transition"
         >
           <RefreshCw size={20} /> Restart
         </button>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] shadow-xl border-4 border-indigo-200 p-8 md:p-12 w-full max-w-3xl text-center relative overflow-hidden">
+      <div className="relative w-full max-w-6xl">
+        <div className={`grid ${gridCols} gap-4 sm:gap-6 lg:gap-8 mx-auto`}>
+          {cards.map((card, index) => (
+            <motion.div
+              key={card.id}
+              className="relative w-full aspect-square cursor-pointer perspective-1000"
+              onClick={() => handleCardClick(index)}
+              whileHover={{ scale: (isFlipped(index) || isMatched(card.matchId)) ? 1 : 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <motion.div
+                className="w-full h-full relative preserve-3d"
+                initial={false}
+                animate={{ rotateY: isFlipped(index) || isMatched(card.matchId) ? 180 : 0 }}
+                transition={{ type: "spring", stiffness: 260, damping: 20 }}
+              >
+                {/* BACK OF CARD (Face Down) */}
+                <div className="absolute inset-0 backface-hidden bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl border-[5px] border-indigo-700 shadow-[inset_0_0_20px_rgba(0,0,0,0.2)] shadow-xl flex items-center justify-center">
+                  <Star className="text-white opacity-40 drop-shadow-lg" size={56} fill="currentColor" />
+                </div>
+                
+                {/* FRONT OF CARD (Face Up) */}
+                <div 
+                  className={`absolute inset-0 backface-hidden rounded-3xl border-[5px] shadow-xl flex items-center justify-center rotate-y-180 bg-gradient-to-br from-white to-sky-50
+                    ${isMatched(card.matchId) ? 'border-green-400 bg-green-50 shadow-[0_0_30px_rgba(74,222,128,0.6)]' : 'border-sky-200'}
+                  `}
+                >
+                  <span className={`text-5xl sm:text-7xl font-black drop-shadow-md ${card.content.length > 2 ? 'text-4xl sm:text-5xl text-blue-800' : 'text-blue-800'}`}>
+                    {card.content}
+                  </span>
+                </div>
+              </motion.div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* COMPLETION OVERLAY */}
         <AnimatePresence>
           {isComplete && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="absolute inset-0 z-20 bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center p-6"
+              className="absolute inset-0 z-50 bg-white/95 backdrop-blur-md rounded-[3rem] border-8 border-yellow-300 flex flex-col items-center justify-center p-8 shadow-2xl"
             >
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ repeat: Infinity, duration: 2 }}
               >
-                <Trophy size={100} className="text-yellow-400 mb-6 drop-shadow-xl" />
+                <Trophy size={120} className="text-yellow-400 mb-6 drop-shadow-xl" />
               </motion.div>
-              <h2 className="text-4xl font-black text-indigo-600 mb-4">You did it! 🎉</h2>
-              <p className="text-xl text-gray-600 font-bold mb-8">
-                Outstanding memory! You completed the game in {attempts} flips.
-              </p>
+              
+              <h2 className="text-5xl font-black text-indigo-800 mb-8">
+                Activity Complete! 🎉
+              </h2>
+
+              <div className="grid grid-cols-3 gap-6 mb-10 w-full max-w-lg">
+                <div className="bg-blue-50 p-6 rounded-3xl text-center">
+                  <p className="font-bold text-blue-600 mb-1">Pairs</p>
+                  <p className="text-3xl font-black text-blue-900">{cards.length / 2}</p>
+                </div>
+                <div className="bg-green-50 p-6 rounded-3xl text-center">
+                  <p className="font-bold text-green-600 mb-1">Accuracy</p>
+                  <p className="text-3xl font-black text-green-900">
+                    {Math.round(((cards.length / 2) / attempts) * 100)}%
+                  </p>
+                </div>
+                <div className="bg-orange-50 p-6 rounded-3xl text-center">
+                  <p className="font-bold text-orange-600 mb-1">Time</p>
+                  <p className="text-2xl font-black text-orange-900">{formatTime(time)}</p>
+                </div>
+              </div>
 
               <div className="flex gap-4">
                 <button
-                  onClick={initializeGame}
-                  className="bg-indigo-500 text-white px-8 py-4 rounded-full font-black text-xl hover:bg-indigo-600 shadow-md transition transform hover:scale-105 cursor-pointer"
+                  onClick={() => startLevel(level)}
+                  className="bg-indigo-500 hover:bg-indigo-600 text-white font-black py-4 px-8 rounded-full text-xl shadow-lg transition"
                 >
                   Play Again
                 </button>
                 <button
-                  onClick={() => navigate("/explorer")}
-                  className="bg-indigo-100 text-indigo-600 px-8 py-4 rounded-full font-black text-xl hover:bg-indigo-200 transition cursor-pointer"
+                  onClick={() => navigate("/parent")}
+                  className="bg-white border-4 border-indigo-200 text-indigo-600 hover:bg-indigo-50 font-black py-4 px-8 rounded-full text-xl transition"
                 >
-                  Done
+                  View Progress
                 </button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-
-        <div className="flex justify-between items-center mb-6">
-          <div className="text-5xl">🧠</div>
-          <div className="flex gap-2">
-            <span className="bg-indigo-100 text-indigo-700 font-black px-4 py-1.5 rounded-full text-sm">
-              Difficulty: {difficultyLabel}
-            </span>
-            <span className="bg-purple-100 text-purple-700 font-black px-4 py-1.5 rounded-full text-sm">
-              Flips: {attempts}
-            </span>
-          </div>
-        </div>
-
-        <h2 className="text-2xl font-black text-gray-800 mb-1">Match the animal cards!</h2>
-        <p className="text-gray-500 mb-8 font-semibold">
-          Tap two cards to flip them and find the matches.
-        </p>
-
-        <div
-          className={`grid gap-4 mb-4 ${
-            pairCount === 2
-              ? "grid-cols-2 max-w-sm mx-auto"
-              : pairCount === 4
-              ? "grid-cols-4 max-w-xl mx-auto"
-              : "grid-cols-3 md:grid-cols-4 max-w-2xl mx-auto"
-          }`}
-        >
-          {cards.map((card, index) => {
-            const isFlipped = flipped.includes(index) || matched.includes(index);
-            return (
-              <div
-                key={card.uniqueId}
-                className="perspective-1000 relative h-28 md:h-36 w-full cursor-pointer"
-                onClick={() => handleCardClick(index)}
-              >
-                <motion.div
-                  className="w-full h-full preserve-3d relative"
-                  initial={false}
-                  animate={{ rotateY: isFlipped ? 180 : 0 }}
-                  transition={{ duration: 0.4, type: "spring", stiffness: 260, damping: 20 }}
-                >
-                  {/* Front of card (hidden initially) */}
-                  <div className="absolute inset-0 backface-hidden flex items-center justify-center bg-white border-4 border-indigo-100 rounded-2xl shadow-sm bg-gradient-to-br from-indigo-50 to-purple-50">
-                    <span className="text-4xl opacity-30 font-black text-indigo-300">?</span>
-                  </div>
-
-                  {/* Back of card (revealed) */}
-                  <div className="absolute inset-0 backface-hidden rotate-y-180 flex items-center justify-center bg-indigo-50 border-4 border-indigo-300 rounded-2xl shadow-md">
-                    <span className="text-5xl md:text-6xl">{card.content}</span>
-                  </div>
-                </motion.div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-8">
-          <MascotGuide activity="memory" mood="happy" />
-        </div>
       </div>
 
-      {/* Required CSS for 3D flip effect without tailwind plugin */}
       <style>{`
         .perspective-1000 { perspective: 1000px; }
         .preserve-3d { transform-style: preserve-3d; }

@@ -5,9 +5,10 @@ const speedMultipliers = require('./speedMultipliers');
  * Calculate severity and custom cognitive indicators based on user answers.
  * @param {Array} answers - array of { questionId, selectedOption, responseTimeMs }
  * @param {Array} allQuestions - full list of question objects (including points, correctAnswer, category, metadata)
+ * @param {String} ageGroup - the age group of the assessment taking place
  * @returns {Object} { score, dyslexiaLevel, weakAreas, categoryBreakdown, metrics, recommendations }
  */
-function calculateSeverity(answers, allQuestions) {
+function calculateSeverity(answers, allQuestions, ageGroup = '') {
   let weightedEarned = 0;
   let weightedPossible = 0;
   const categoryStats = {};
@@ -67,7 +68,7 @@ function calculateSeverity(answers, allQuestions) {
     }
 
     // 4. Reading speed tracking (average reading response time in seconds)
-    const readingCategories = ['reading_speed', 'reading_speed_tracking', 'paragraph_reading', 'comprehension_passages', 'timed_reading'];
+    const readingCategories = ['reading_speed', 'reading_speed_tracking', 'paragraph_reading', 'comprehension_passages', 'timed_reading', 'simple_word_reading', 'simple_sentence_recognition'];
     if (readingCategories.includes(q.category) && !isSkipped) {
       readingTimeTotal += (ans.responseTimeMs || 0);
       readingCount++;
@@ -89,13 +90,18 @@ function calculateSeverity(answers, allQuestions) {
   const score = Math.round(rawScore * 100) / 100;
 
   // Generate dyslexia level (risk level)
-  // Higher score means LOWER dyslexia risk, so we map:
-  // score >= 80 -> Mild (or Typical/Low risk)
-  // score >= 50 -> Moderate
-  // score < 50  -> Severe
-  let dyslexiaLevel = 'Severe';
-  if (score >= 80) dyslexiaLevel = 'Mild';
-  else if (score >= 50) dyslexiaLevel = 'Moderate';
+  let dyslexiaLevel = 'severe';
+  const group = (ageGroup || '').toLowerCase();
+  
+  if (group === 'beginner') {
+    if (score >= 85) dyslexiaLevel = 'mild';
+    else if (score >= 60) dyslexiaLevel = 'moderate';
+    else dyslexiaLevel = 'severe';
+  } else {
+    if (score >= 80) dyslexiaLevel = 'mild';
+    else if (score >= 50) dyslexiaLevel = 'moderate';
+    else dyslexiaLevel = 'severe';
+  }
 
   // Category breakdown and weak areas
   const weakAreas = [];

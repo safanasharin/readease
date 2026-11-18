@@ -90,11 +90,11 @@ router.post('/submit', async (req, res) => {
     const fullQuestions = loadFullQuestions(session.ageGroup);
 
     // Calculate severity and analytics
-    const result = calculateSeverity(answers, fullQuestions);
+    const result = calculateSeverity(answers, fullQuestions, session.ageGroup);
 
     let riskLevel = "level1";
-    if (result.dyslexiaLevel === "Moderate") riskLevel = "level2";
-    if (result.dyslexiaLevel === "Severe") riskLevel = "level3";
+    if (result.dyslexiaLevel.toLowerCase() === "moderate") riskLevel = "level2";
+    if (result.dyslexiaLevel.toLowerCase() === "severe") riskLevel = "level3";
 
     // Update session
     session.answers = answers;
@@ -106,9 +106,9 @@ router.post('/submit', async (req, res) => {
     // Update user profile
     // Derive sub-scores from category breakdown
     const cb = result.categoryBreakdown || {};
-    const readingCategories = ['reading_speed', 'reading_speed_tracking', 'paragraph_reading', 'comprehension_passages', 'timed_reading'];
+    const readingCategories = ['reading_speed', 'reading_speed_tracking', 'paragraph_reading', 'comprehension_passages', 'timed_reading', 'simple_word_reading', 'simple_sentence_recognition'];
     const writingCategories = ['missing_letters', 'spelling_correction', 'grammar_tracking', 'grammar_correction'];
-    const phonicsCategories = ['phonics', 'rhyming', 'sound_matching', 'letter_confusion'];
+    const phonicsCategories = ['phonics', 'rhyming', 'sound_matching', 'letter_confusion', 'audio_word_matching', 'rhyming_words'];
     
     const avgCat = (cats) => {
       const scores = cats.map(c => cb[c]).filter(s => s !== undefined);
@@ -131,14 +131,14 @@ router.post('/submit', async (req, res) => {
     const interventionPlan = {
       level: result.dyslexiaLevel,
       focusAreas: result.weakAreas || [],
-      dailyGoalMinutes: result.dyslexiaLevel === 'Severe' ? 40 : result.dyslexiaLevel === 'Moderate' ? 30 : 20,
+      dailyGoalMinutes: result.dyslexiaLevel.toLowerCase() === 'severe' ? 40 : result.dyslexiaLevel.toLowerCase() === 'moderate' ? 30 : 20,
       strategies: result.recommendations || [],
       createdAt: new Date(),
     };
 
     let supportLevel = "emerging_support";
-    if (result.dyslexiaLevel === "Moderate") supportLevel = "guided_support";
-    if (result.dyslexiaLevel === "Severe") supportLevel = "intensive_support";
+    if (result.dyslexiaLevel.toLowerCase() === "moderate") supportLevel = "guided_support";
+    if (result.dyslexiaLevel.toLowerCase() === "severe") supportLevel = "intensive_support";
 
     const initialSkillProgress = {
       phonologicalAwareness: phonicsScore || 50,

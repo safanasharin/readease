@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 
 export default function Reader() {
@@ -19,9 +20,7 @@ export default function Reader() {
 
   const story = location.state?.story || null;
 
-  const storedUser = localStorage.getItem("loggedInUser");
-  const token = localStorage.getItem("token");
-  const loggedInUser = storedUser ? JSON.parse(storedUser) : null;
+  const { user, token } = useAuth();
 
   const [text, setText] = useState("");
   const [words, setWords] = useState([]);
@@ -63,6 +62,10 @@ export default function Reader() {
       window.speechSynthesis.onvoiceschanged = null;
       isCancelledRef.current = true;
       window.speechSynthesis.cancel();
+      if (!hasSavedRef.current && startTimeRef.current) {
+        hasSavedRef.current = true;
+        handleSaveProgress(false);
+      }
     };
   }, []);
 
@@ -130,7 +133,7 @@ export default function Reader() {
 
   const handleSaveProgress = async (completedStatus = false) => {
     try {
-      const userId = loggedInUser?._id;
+      const userId = user?._id;
 
       if (!userId || !token) {
         setSaveMessage("Please login to save progress.");
@@ -146,6 +149,33 @@ export default function Reader() {
       const readingTime = startTimeRef.current
         ? Math.max(1, Math.round((endTime - startTimeRef.current) / 1000))
         : 1;
+
+      console.log("Age Group:", user?.ageGroup);
+      console.log("Reading Time Recorded:", readingTime);
+
+      const ageGroupStr = String(user?.ageGroup).toLowerCase();
+      const isAgeGroup34 = ageGroupStr === "3" || ageGroupStr === "4" || ageGroupStr === "intermediate" || ageGroupStr === "advanced";
+
+      if (isAgeGroup34) {
+        fetch("http://localhost:5000/api/child-progress/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            userId,
+            storyId: story?._id || null,
+            storyTitle: story?.title || "Custom Reading",
+            readingTime,
+            completed: completedStatus,
+            score: completedStatus ? 100 : 0,
+            activityType: "story_explorer", 
+            contentSource: story?._id ? "story" : "custom",
+            date: new Date(),
+          }),
+        }).catch(err => console.error("Child progress save error:", err));
+      }
 
       const response = await fetch("http://localhost:5000/api/progress/save", {
         method: "POST",

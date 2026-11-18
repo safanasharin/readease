@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 
 export default function VoicePractice() {
@@ -13,9 +14,7 @@ export default function VoicePractice() {
 
   const selectedStory = location.state?.story || null;
 
-  const storedUser = localStorage.getItem("loggedInUser");
-  const token = localStorage.getItem("token");
-  const loggedInUser = storedUser ? JSON.parse(storedUser) : null;
+  const { user, token } = useAuth();
 
   const [passage, setPassage] = useState("");
   const [spokenText, setSpokenText] = useState("");
@@ -48,6 +47,11 @@ export default function VoicePractice() {
 
     return () => {
       if (recognitionRef.current) recognitionRef.current.stop();
+      if (!hasSavedRef.current && startTimeRef.current) {
+        const readingTime = Math.max(1, Math.round((Date.now() - startTimeRef.current) / 1000));
+        hasSavedRef.current = true;
+        saveProgressToDB({ finalScore: score || 0 }, readingTime);
+      }
     };
   }, [selectedStory]);
 
@@ -213,11 +217,38 @@ export default function VoicePractice() {
       return;
     }
     try {
-      const userId = loggedInUser?._id || loggedInUser?.id;
+      const userId = user?._id || user?.id;
 
       if (!userId || !token) {
         setSaveMessage("Login required to save progress.");
         return;
+      }
+
+      console.log("Age Group:", user?.ageGroup);
+      console.log("Reading Time Recorded:", readingTime);
+
+      const ageGroupStr = String(user?.ageGroup).toLowerCase();
+      const isAgeGroup34 = ageGroupStr === "3" || ageGroupStr === "4" || ageGroupStr === "intermediate" || ageGroupStr === "advanced";
+
+      if (isAgeGroup34) {
+        fetch("http://localhost:5000/api/child-progress/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            userId,
+            storyId: selectedStory?._id || null,
+            storyTitle: selectedStory?.title || "Voice Practice",
+            readingTime,
+            score: result.finalScore,
+            completed: true,
+            activityType: "story_explorer", // Maps to storyExplorerTotalTime in summary
+            contentSource: selectedStory?._id ? "story" : "custom",
+            date: new Date(),
+          }),
+        }).catch(err => console.error("Child progress save error:", err));
       }
 
       const response = await fetch("http://localhost:5000/api/progress/save", {

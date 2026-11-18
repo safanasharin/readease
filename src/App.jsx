@@ -1,6 +1,8 @@
 /* eslint-disable */
 import { Routes, Route, Navigate } from "react-router-dom";
 import AssessmentGuard from "./components/auth/AssessmentGuard";
+import { RewardProvider } from "./rewardSystem/RewardContext";
+import RewardPopup from "./components/explorer/RewardPopup";
 
 // Public pages
 import Home from "./Home";
@@ -12,6 +14,8 @@ import AdaptiveAssessment from "./pages/AdaptiveAssessment";
 
 // Centralized Dashboard Router
 import DashboardRouter from "./dashboards/DashboardRouter";
+import ParentDashboardRouter from "./pages/parent/ParentDashboardRouter";
+import AgeGroup3ParentDashboard from "./pages/parent/AgeGroup3ParentDashboard";
 
 // Explorer activities
 import TracingActivity from "./pages/explorer/activities/TracingActivity";
@@ -22,7 +26,15 @@ import SoundMatchingActivity from "./pages/explorer/activities/SoundMatchingActi
 import LetterConfusionActivity from "./pages/explorer/activities/LetterConfusionActivity";
 import SequencingActivity from "./pages/explorer/activities/SequencingActivity";
 import VisualDiscriminationActivity from "./pages/explorer/activities/VisualDiscriminationActivity";
-import ParentDashboard from "./pages/parent/ParentDashboard";
+import ChildProgressDashboard from "./pages/explorer/ChildProgressDashboard";
+import ChildParentDashboard from "./pages/explorer/ChildParentDashboard";
+
+// Beginner Activities
+import ReadingPractice from "./pages/beginner/ReadingPractice";
+import VocabularyBuilder from "./pages/beginner/VocabularyBuilder";
+import WordDetective from "./pages/beginner/WordDetective";
+import StoryExplorer from "./pages/beginner/StoryExplorer";
+import SentenceBuilder from "./pages/beginner/SentenceBuilder";
 
 // Shared protected pages
 import Reader from "./Reader";
@@ -32,7 +44,9 @@ import Stories from "./Stories";
 
 function App() {
   return (
-    <Routes>
+    <RewardProvider>
+      <RewardPopup />
+      <Routes>
       {/* ── Public ──────────────────────────────── */}
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Navigate to="/" replace />} />
@@ -66,6 +80,18 @@ function App() {
       <Route path="/advanced"
         element={<AssessmentGuard><DashboardRouter /></AssessmentGuard>} />
 
+      {/* ── Beginner Activities ──────────────────── */}
+      <Route path="/activity/reading-practice"
+        element={<AssessmentGuard><ReadingPractice /></AssessmentGuard>} />
+      <Route path="/activity/vocabulary-builder"
+        element={<AssessmentGuard><VocabularyBuilder /></AssessmentGuard>} />
+      <Route path="/activity/word-detective"
+        element={<AssessmentGuard><WordDetective /></AssessmentGuard>} />
+      <Route path="/activity/story-explorer"
+        element={<AssessmentGuard><StoryExplorer /></AssessmentGuard>} />
+      <Route path="/activity/sentence-builder"
+        element={<AssessmentGuard><SentenceBuilder /></AssessmentGuard>} />
+
       {/* ── Explorer Activities ──────────────────── */}
       <Route path="/explorer/activity/tracing"
         element={<AssessmentGuard><TracingActivity /></AssessmentGuard>} />
@@ -86,7 +112,11 @@ function App() {
 
       {/* ── Parent Dashboard ────────────────────── */}
       <Route path="/parent"
-        element={<AssessmentGuard><ParentDashboard /></AssessmentGuard>} />
+        element={<AssessmentGuard><ParentDashboardRouter /></AssessmentGuard>} />
+      <Route path="/parent-age3"
+        element={<AssessmentGuard><AgeGroup3ParentDashboard /></AssessmentGuard>} />
+      <Route path="/child-parent"
+        element={<AssessmentGuard><ChildParentDashboard /></AssessmentGuard>} />
 
       {/* ── Beginner Activities ──────────────────── */}
       <Route path="/beginner/activity/:activityId"
@@ -109,7 +139,8 @@ function App() {
         element={<AssessmentGuard><VoicePractice /></AssessmentGuard>} />
       <Route path="/stories"
         element={<AssessmentGuard><Stories /></AssessmentGuard>} />
-    </Routes>
+      </Routes>
+    </RewardProvider>
   );
 }
 

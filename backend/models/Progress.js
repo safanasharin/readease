@@ -35,9 +35,14 @@ const progressSchema = new mongoose.Schema(
       default: 0,
     },
 
+    letter: {
+      type: String,
+      default: null,
+    },
+
     activityType: {
       type: String,
-      enum: ["reader", "voice-practice"],
+      enum: ["reader", "voice-practice", "letter_tracing"],
       required: true,
     },
 

@@ -147,7 +147,7 @@ export default function AdaptiveAssessment() {
   useEffect(() => {
     if (questions.length > 0 && currentIndex < questions.length && !loading && !showFeedback && !assessmentResult) {
       const q = questions[currentIndex];
-      const timeLimitMs = q.metadata?.responseTimeLimitMs || (ageGroup === "advanced" ? 15000 : 20000);
+      const timeLimitMs = q.metadata?.responseTimeLimitMs || (ageGroup === "advanced" ? 45000 : 20000);
       setTimeLeft(Math.ceil(timeLimitMs / 1000));
 
       if (timerRef.current) clearInterval(timerRef.current);
@@ -605,7 +605,9 @@ export default function AdaptiveAssessment() {
             {/* Encouraging tip below card */}
             {!lowDistraction && (
               <div className="text-center mt-6 text-sm text-gray-500 font-bold animate-pulse">
-                🐱 "You are doing amazing! Take your time and focus on the letters!"
+                {ageGroup === "advanced"
+                  ? "💡 Take your time — read each passage carefully and trust your reasoning."
+                  : "🐱 \"You are doing amazing! Take your time and focus on the letters!\""}
               </div>
             )}
 

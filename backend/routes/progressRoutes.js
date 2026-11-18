@@ -17,6 +17,7 @@ router.post("/save", async (req, res) => {
       readingTime,
       completed,
       score,
+      letter,
       activityType,
       contentSource,
       date,
@@ -38,9 +39,9 @@ router.post("/save", async (req, res) => {
       return res.status(400).json({ message: "Invalid storyId" });
     }
 
-    if (!activityType || !["reader", "voice-practice"].includes(activityType)) {
+    if (!activityType || !["reader", "voice-practice", "letter_tracing"].includes(activityType)) {
       return res.status(400).json({
-        message: "activityType must be 'reader' or 'voice-practice'",
+        message: "activityType must be 'reader', 'voice-practice', or 'letter_tracing'",
       });
     }
 
@@ -50,6 +51,7 @@ router.post("/save", async (req, res) => {
       readingTime: Number(readingTime || 0),
       completed: Boolean(completed),
       score: Number(score || 0),
+      letter: letter || null,
       activityType,
       contentSource: contentSource || "story",
       date: date ? new Date(date) : new Date(),

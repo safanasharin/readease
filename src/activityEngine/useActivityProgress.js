@@ -7,7 +7,7 @@ const UNLOCK_CHAIN = {
   sorting: "story",
 };
 
-const INITIAL_UNLOCKED = new Set(["tracing", "sound-matching"]);
+const INITIAL_UNLOCKED = new Set(["tracing", "sound-matching", "memory", "sorting", "letter-confusion", "story", "sequencing"]);
 
 export function useActivityProgress() {
   const [unlockedActivities, setUnlockedActivities] = useState(INITIAL_UNLOCKED);

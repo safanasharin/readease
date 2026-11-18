@@ -1,44 +1,37 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef, useState } from "react";
 
-const LETTER_PATHS = {
-  A: "M50,10 L90,90 M10,90 L90,90 M30,55 L70,55",
-  B: "M20,10 L20,90 M20,10 Q70,10 70,50 Q70,90 20,90",
-  C: "M80,20 Q15,10 15,50 Q15,90 80,80",
-  D: "M20,10 L20,90 M20,10 Q85,10 85,50 Q85,90 20,90",
-  E: "M20,10 L20,90 M20,10 L80,10 M20,50 L65,50 M20,90 L80,90",
-  F: "M20,10 L20,90 M20,10 L80,10 M20,50 L65,50",
-  G: "M80,20 Q15,10 15,50 Q15,90 80,80 M80,80 L80,55 M80,55 L55,55",
-  H: "M20,10 L20,90 M80,10 L80,90 M20,50 L80,50",
-  I: "M30,10 L70,10 M50,10 L50,90 M30,90 L70,90",
-  J: "M70,10 L70,75 Q70,95 45,95 Q20,95 20,75",
-  K: "M20,10 L20,90 M80,10 L20,50 M20,50 L80,90",
-  L: "M20,10 L20,90 M20,90 L80,90",
-  M: "M10,90 L10,10 L50,55 L90,10 L90,90",
-  N: "M20,90 L20,10 L80,90 L80,10",
-  O: "M50,10 Q90,10 90,50 Q90,90 50,90 Q10,90 10,50 Q10,10 50,10",
-  P: "M20,10 L20,90 M20,10 Q70,10 70,45 Q70,80 20,80",
-  Q: "M50,10 Q90,10 90,50 Q90,90 50,90 Q10,90 10,50 Q10,10 50,10 M65,75 L85,95",
-  R: "M20,10 L20,90 M20,10 Q70,10 70,45 Q70,80 20,80 M45,80 L80,90",
-  S: "M75,20 Q15,5 20,50 Q25,90 75,80",
-  T: "M10,10 L90,10 M50,10 L50,90",
-  U: "M20,10 L20,65 Q20,90 50,90 Q80,90 80,65 L80,10",
-  V: "M10,10 L50,90 L90,10",
-  W: "M10,10 L30,90 L50,50 L70,90 L90,10",
-  X: "M20,10 L80,90 M80,10 L20,90",
-  Y: "M20,10 L50,50 L80,10 M50,50 L50,90",
-  Z: "M20,10 L80,10 L20,90 L80,90",
-};
+// Helper to draw an arrow head
+function drawArrowhead(ctx, x, y, angle) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(-15, -10);
+  ctx.lineTo(-15, 10);
+  ctx.closePath();
+  ctx.fillStyle = "#6366F1";
+  ctx.fill();
+  ctx.restore();
+}
 
-const LetterCanvas = forwardRef(function LetterCanvas({ letter = "A", width = 200, height = 200, onStrokeComplete }, ref) {
-  const canvasRef = useRef(null);
-  const isDrawing = useRef(false);
-  const lastPos = useRef(null);
-  const strokeCount = useRef(0);
-  const [strokesDone, setStrokesDone] = useState(0);
+import { ALPHABET_DATA } from "../../data/alphabetPaths";
 
-  // Draw the dotted guide letter
-  const drawGuide = () => {
-    const canvas = canvasRef.current;
+const LetterCanvas = forwardRef(function LetterCanvas({ letter = "A", width = 320, height = 320, smartAssistance = false }, ref) {
+  const guideCanvasRef = useRef(null);
+  const drawingCanvasRef = useRef(null);
+  const hiddenCanvasRef = useRef(null); 
+  
+  const [userStrokes, setUserStrokes] = useState([]);
+  const [isDrawing, setIsDrawing] = useState(false); // Changed to state for strict reactivity
+  const currentPath = useRef([]);
+
+  const letterData = ALPHABET_DATA[letter] || ALPHABET_DATA["A"];
+  const targetStrokes = letterData.strokes;
+
+  // Draw background and guide (Bottom Layer)
+  const drawGuideLayer = () => {
+    const canvas = guideCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, width, height);
@@ -47,87 +40,279 @@ const LetterCanvas = forwardRef(function LetterCanvas({ letter = "A", width = 20
     ctx.fillStyle = "#FFF9F0";
     ctx.fillRect(0, 0, width, height);
 
-    // Dotted guide path
-    ctx.save();
-    ctx.strokeStyle = "#D1B896";
-    ctx.lineWidth = 6;
-    ctx.setLineDash([8, 6]);
-    ctx.lineCap = "round";
-    ctx.font = `bold ${Math.min(width, height) * 0.75}px Arial`;
-    ctx.fillStyle = "rgba(200, 180, 150, 0.18)";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(letter, width / 2, height / 2);
-    ctx.strokeText(letter, width / 2, height / 2);
-    ctx.restore();
+    // Draw target guides
+    targetStrokes.forEach((stroke, i) => {
+      ctx.save();
+      ctx.strokeStyle = "rgba(200, 180, 150, 0.4)";
+      ctx.lineWidth = 20;
+      ctx.setLineDash([15, 15]);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      const p = new Path2D(stroke.path);
+      ctx.stroke(p);
+      
+      // Draw Directional Arrows
+      if (stroke.type === "line") {
+         const dx = stroke.end.x - stroke.start.x;
+         const dy = stroke.end.y - stroke.start.y;
+         const angle = Math.atan2(dy, dx);
+         const midX = stroke.start.x + (dx * 0.3);
+         const midY = stroke.start.y + (dy * 0.3);
+         drawArrowhead(ctx, midX, midY, angle);
+      }
+      ctx.restore();
 
-    // Direction arrow at top-left of letter
-    ctx.save();
-    ctx.fillStyle = "#F87171";
-    ctx.font = "bold 18px Arial";
-    ctx.fillText("↓", width * 0.35, height * 0.2);
-    ctx.restore();
+      // Start Dot (Green)
+      ctx.beginPath();
+      ctx.arc(stroke.start.x, stroke.start.y, 12, 0, 2 * Math.PI);
+      ctx.fillStyle = smartAssistance && userStrokes.length === i ? "#22c55e" : "#4ade80"; 
+      ctx.fill();
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Number
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 14px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText((i + 1).toString(), stroke.start.x, stroke.start.y);
+
+      // End Dot (Red)
+      ctx.beginPath();
+      ctx.arc(stroke.end.x, stroke.end.y, 8, 0, 2 * Math.PI);
+      ctx.fillStyle = "#ef4444";
+      ctx.fill();
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      // Smart assistance pulse ring
+      if (smartAssistance && userStrokes.length === i) {
+        ctx.beginPath();
+        ctx.arc(stroke.start.x, stroke.start.y, 20, 0, 2 * Math.PI);
+        ctx.strokeStyle = "rgba(34, 197, 94, 0.5)";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+      }
+    });
+
+    // Draw Hidden Hitbox (for coverage calculation)
+    const hCanvas = hiddenCanvasRef.current;
+    if (hCanvas) {
+       const hCtx = hCanvas.getContext("2d");
+       hCtx.clearRect(0, 0, width, height);
+       hCtx.strokeStyle = "#000000";
+       hCtx.lineWidth = 50; 
+       hCtx.lineCap = "round";
+       hCtx.lineJoin = "round";
+       targetStrokes.forEach(s => hCtx.stroke(new Path2D(s.path)));
+    }
   };
 
-  useEffect(() => { drawGuide(); }, [letter]);
+  // Redraw all stored strokes on the Top Layer
+  const drawUserLayer = () => {
+    const canvas = drawingCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, width, height);
 
-  const getPos = (e, canvas) => {
+    userStrokes.forEach((strokePoints) => {
+       if (strokePoints.length === 0) return;
+       ctx.beginPath();
+       ctx.moveTo(strokePoints[0].x, strokePoints[0].y);
+       for(let i = 1; i < strokePoints.length; i++) {
+         ctx.lineTo(strokePoints[i].x, strokePoints[i].y);
+       }
+       ctx.strokeStyle = "#3B82F6"; // Bright Blue
+       ctx.lineWidth = 12; // 8-12px range as requested
+       ctx.lineCap = "round";
+       ctx.lineJoin = "round";
+       ctx.stroke();
+    });
+  };
+
+  // Draw guide whenever letter or smart assistance changes
+  useEffect(() => { 
+    drawGuideLayer(); 
+  }, [letter, smartAssistance, userStrokes.length]); // depend on length for smart assistance ring update
+
+  // Draw user strokes whenever they update
+  useEffect(() => {
+    drawUserLayer();
+  }, [userStrokes]);
+
+  const getPos = (e) => {
+    const canvas = drawingCanvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
+    
     const rect = canvas.getBoundingClientRect();
-    if (e.touches) {
-      return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+    const scaleX = canvas.width / (rect.width || canvas.width);
+    const scaleY = canvas.height / (rect.height || canvas.height);
+
+    let clientX = e.clientX;
+    let clientY = e.clientY;
+
+    if (e.touches && e.touches.length > 0) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
     }
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+
+    const x = ((clientX || 0) - rect.left) * scaleX;
+    const y = ((clientY || 0) - rect.top) * scaleY;
+    
+    console.log("COORD:", x, y);
+    return { x, y };
   };
 
   const startDraw = (e) => {
-    e.preventDefault();
-    isDrawing.current = true;
-    lastPos.current = getPos(e, canvasRef.current);
+    if (e.type.includes('touch')) e.preventDefault(); // Safely prevent default only on touch
+    console.log("DRAW START");
+    setIsDrawing(true);
+    
+    const pos = getPos(e);
+    currentPath.current = [pos];
+    
+    const ctx = drawingCanvasRef.current?.getContext("2d");
+    if (ctx) {
+      console.log("CTX VALID ON START");
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, 6, 0, Math.PI * 2);
+      ctx.fillStyle = "#3B82F6";
+      ctx.fill();
+    }
   };
 
   const draw = (e) => {
-    e.preventDefault();
-    if (!isDrawing.current) return;
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const pos = getPos(e, canvas);
-
-    ctx.beginPath();
-    ctx.moveTo(lastPos.current.x, lastPos.current.y);
-    ctx.lineTo(pos.x, pos.y);
-    ctx.strokeStyle = "#6366F1";
-    ctx.lineWidth = 8;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.setLineDash([]);
-    ctx.stroke();
-    lastPos.current = pos;
+    if (e.type.includes('touch')) e.preventDefault();
+    if (!isDrawing) return;
+    
+    console.log("DRAW MOVE");
+    const pos = getPos(e);
+    currentPath.current.push(pos);
+    
+    const ctx = drawingCanvasRef.current?.getContext("2d");
+    if (ctx) {
+      const lastPos = currentPath.current[currentPath.current.length - 2];
+      ctx.beginPath();
+      ctx.moveTo(lastPos.x, lastPos.y);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.strokeStyle = "#3B82F6"; 
+      ctx.lineWidth = 12; 
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.stroke();
+    }
   };
 
-  const endDraw = () => {
-    if (!isDrawing.current) return;
-    isDrawing.current = false;
-    strokeCount.current += 1;
-    setStrokesDone(strokeCount.current);
-    if (onStrokeComplete) onStrokeComplete(strokeCount.current);
+  const endDraw = (e) => {
+    if (e && e.type.includes('touch')) e.preventDefault();
+    if (!isDrawing) return;
+    
+    console.log("DRAW END");
+    setIsDrawing(false);
+    
+    if (currentPath.current.length > 0) {
+      // CRITICAL FIX: Synchronously clone the array BEFORE React's async updater evaluates it!
+      const completedPath = [...currentPath.current];
+      setUserStrokes(prev => [...prev, completedPath]);
+    }
+    currentPath.current = [];
   };
 
   const clearCanvas = () => {
-    strokeCount.current = 0;
-    setStrokesDone(0);
-    drawGuide();
+    setUserStrokes([]);
   };
 
-  useImperativeHandle(ref, () => ({ clearCanvas, strokesDone: strokeCount.current }));
+  const undo = () => {
+    setUserStrokes(prev => prev.slice(0, -1));
+  };
+
+  // --- Forgiving Child-Friendly Physics Engine ---
+  const calculateAccuracy = () => {
+    if (userStrokes.length === 0) return 0;
+
+    let orderScore = 0;
+    const TOLERANCE = 45; 
+    
+    // 1. Evaluate Start & End Points and Order
+    const checks = Math.min(userStrokes.length, targetStrokes.length);
+    for (let i = 0; i < checks; i++) {
+       const uStart = userStrokes[i][0];
+       const uEnd = userStrokes[i][userStrokes[i].length - 1];
+       const tStart = targetStrokes[i].start;
+       const tEnd = targetStrokes[i].end;
+
+       const distStart = Math.hypot(uStart.x - tStart.x, uStart.y - tStart.y);
+       const distEnd = Math.hypot(uEnd.x - tEnd.x, uEnd.y - tEnd.y);
+       
+       if (distStart < TOLERANCE) orderScore += 10;
+       if (distEnd < TOLERANCE) orderScore += 10;
+    }
+    let finalOrderScore = (orderScore / (targetStrokes.length * 20)) * 100;
+
+    // 2. Evaluate Canvas Pixel Coverage
+    const vCanvas = drawingCanvasRef.current;
+    const hCanvas = hiddenCanvasRef.current;
+    const vCtx = vCanvas.getContext("2d");
+    const hCtx = hCanvas.getContext("2d");
+    
+    // (Visible drawing layer already contains exactly what the user drew!)
+    const vData = vCtx.getImageData(0, 0, width, height).data;
+    const hData = hCtx.getImageData(0, 0, width, height).data;
+    
+    let userPixels = 0;
+    let overlapPixels = 0;
+    let hitboxTotalPixels = 0;
+    
+    for (let i = 0; i < vData.length; i += 16) {
+      const isHitbox = hData[i + 3] > 128;
+      const isUser = vData[i + 3] > 0; // Check drawing layer alpha
+      if (isHitbox) hitboxTotalPixels++;
+      if (isUser) userPixels++;
+      if (isHitbox && isUser) overlapPixels++;
+    }
+
+    let coverageScore = 0;
+    if (hitboxTotalPixels > 0) {
+       coverageScore = Math.min(100, (overlapPixels / (hitboxTotalPixels * 0.4)) * 100);
+    }
+    
+    let finalScore = (finalOrderScore * 0.6) + (coverageScore * 0.4);
+
+    if (userStrokes.length > targetStrokes.length + 1) {
+       finalScore -= ((userStrokes.length - targetStrokes.length) * 10);
+    }
+
+    if (finalScore >= 50 && finalScore < 60) finalScore = 62;
+
+    return Math.max(0, Math.min(100, Math.round(finalScore)));
+  };
+
+  useImperativeHandle(ref, () => ({ 
+    clearCanvas, 
+    undo,
+    calculateAccuracy,
+    strokesDone: userStrokes.length 
+  }));
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div className="relative flex flex-col items-center w-full max-w-[320px] aspect-square rounded-3xl border-4 border-indigo-200 shadow-xl overflow-hidden bg-white">
+      {/* BOTTOM LAYER: Letter Guide (Static sizing blocks container collapse) */}
       <canvas
-        ref={canvasRef}
+        ref={guideCanvasRef}
         width={width}
         height={height}
-        className="rounded-2xl border-4 border-amber-200 shadow-xl touch-none cursor-crosshair"
-        style={{ background: "#FFF9F0" }}
+        className="w-full h-full"
+        style={{ pointerEvents: 'none', zIndex: 1 }}
+      />
+      {/* TOP LAYER: User Drawing */}
+      <canvas
+        ref={drawingCanvasRef}
+        width={width}
+        height={height}
+        className="absolute inset-0 w-full h-full touch-none cursor-crosshair"
+        style={{ pointerEvents: 'auto', zIndex: 10 }}
         onMouseDown={startDraw}
         onMouseMove={draw}
         onMouseUp={endDraw}
@@ -136,15 +321,8 @@ const LetterCanvas = forwardRef(function LetterCanvas({ letter = "A", width = 20
         onTouchMove={draw}
         onTouchEnd={endDraw}
       />
-      <div className="flex items-center gap-2">
-        <span className="text-sm font-bold text-gray-500">Strokes: {strokesDone}</span>
-        <button
-          onClick={clearCanvas}
-          className="text-xs font-bold bg-red-100 text-red-500 px-3 py-1 rounded-full hover:bg-red-200 transition cursor-pointer"
-        >
-          Clear ✕
-        </button>
-      </div>
+      {/* HIDDEN LAYER: Hitbox */}
+      <canvas ref={hiddenCanvasRef} width={width} height={height} className="hidden" style={{ zIndex: 0 }} />
     </div>
   );
 });

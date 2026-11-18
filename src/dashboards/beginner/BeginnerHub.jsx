@@ -35,10 +35,10 @@ const ACTIVITIES = [
     difficulty: "intermediate",
   },
   {
-    id: "simple-story",
+    id: "story-explorer",
     emoji: "📖",
-    label: "Read a Story",
-    desc: "Short, fun reading with audio help",
+    label: "Story Explorer",
+    desc: "Read fun stories with audio help",
     color: "from-emerald-500 to-teal-500",
     glow: "shadow-emerald-200",
     difficulty: "intermediate",

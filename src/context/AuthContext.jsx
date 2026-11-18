@@ -24,8 +24,10 @@ export function AuthProvider({ children }) {
         return null;
       }
       const data = await res.json();
-      setUser(data.user);
-      return data.user;
+      const fetchedUser = data.user;
+      
+      setUser(fetchedUser);
+      return fetchedUser;
     } catch (err) {
       console.error("Failed to fetch user profile:", err);
       return null;
